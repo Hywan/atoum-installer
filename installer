@@ -160,11 +160,11 @@ function checkRequirements($args) {
 
 function checkPermissions($args) {
 	if(false != ($restrict = ini_get('open_basedir'))) {
-		printfln('>> <yellow>open_basedir restriction : %s', $restrict);
-		printfln('>>> To fix this issue, try to run : ');
-		printfln('>>> <yellow>ATOUM_PATH=/an/allowed/path ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | ATOUM_PATH=/an/allowed/path php');
-		printfln('>>> or');
-		printfln('>>> <yellow>php -dopen_basedir= ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | php -dopen_basedir=');
+		printfln('>>> <yellow>open_basedir restriction : %s', $restrict);
+		printfln('>>>> To fix this issue, try to run : ');
+		printfln('>>>> <yellow>ATOUM_PATH=/an/allowed/path ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | ATOUM_PATH=/an/allowed/path php');
+		printfln('>>>> or');
+		printfln('>>>> <yellow>php -dopen_basedir= ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | php -dopen_basedir=');
 	}	
 	
 	if(true === in_array('--global', $args)) {
@@ -180,7 +180,7 @@ function checkPermissions($args) {
         
 	if(true === in_array(false, $paths)) {
                $paths = implode(', ', array_keys(array_filter($paths, function($v) { return (false === $v);  })));
-               printfln('>> <red>You don\'t have permission to write to <yellow>%s', $paths);
+               printfln('>>> <red>You don\'t have permission to write to <yellow>%s', $paths);
 
                return false;
         }
