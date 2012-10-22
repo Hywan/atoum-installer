@@ -1,236 +1,245 @@
 #!/usr/bin/env php
 <?php
+define('INSTALLER_URL', 'https://raw.github.com/gist/3934569/installer');
+
 define('ATOUM_PHAR_NAME', 'mageekguy.atoum.phar');
 define('ATOUM_PHAR_URL', 'http://downloads.atoum.org/nightly/' . ATOUM_PHAR_NAME);
 define('ATOUM_GIT_URL', 'git://github.com/mageekguy/atoum.git');
 
 define('ATOUM_PATH', (($path = getenv('ATOUM_PATH')) ? $path : '/usr/share') . DIRECTORY_SEPARATOR . 'atoum');
-define('ATOUM_SYMLINK', (($path = getenv('ATOUM_SYMLINK')) ? $path : '/usr/local/bin') . DIRECTORY_SEPARATOR . 'atoum');
+define('ATOUM_SYMLINK', (($symlink = getenv('ATOUM_SYMLINK')) ? $symlink : '/usr/local/bin') . DIRECTORY_SEPARATOR . 'atoum');
+
 if(false !== getenv('ATOUM_PATH') || false !== getenv('ATOUM_SYMLINK')) {
-	$argv[] = '--global';
+    $argv[] = '--global';
 }
 
-define('INSTALLER_URL', 'https://raw.github.com/gist/3934569/installer');
-
 array_shift($argv);
-
 exit(install($argv));
 
 function install($args) {
-	printfln('> <green>atoum installer');	
-	printfln('> <blue>The modern, simple and intuitive PHP 5.3+ unit testing framework.');
+    printfln('> <green>atoum installer');    
+    printfln('> <blue>The modern, simple and intuitive PHP 5.3+ unit testing framework.');
 
-	if(true === in_array('--usage', $args)) {
-		$format = '%-15s : %s';
-		printfln($format, '--global', 'Install atoum as a global command');
-		printfln($format, '--phar', 'Install atoum as a PHAR archive');
-		printfln($format, '--source', 'Install atoum from sources <yellow>(default)');
-		printfln($format, '--check', 'Only run system requirements check');
+    if(true === in_array('--usage', $args)) {
+        usage();
 
-		printfln(PHP_EOL . 'Environment :');
-		printfln($format, 'ATOUM_PATH', 'Installation directory <yellow>(default : /usr/share)');
-		printfln($format, 'ATOUM_SYMLINK', 'atoum bin symlink path <yellow>(default: /usr/local/bin)');
-		
-		printfln(PHP_EOL . 'Examples :');
-		printfln('$ curl ' . INSTALLER_URL .' | php --phar');
-		printfln('$ curl ' . INSTALLER_URL .' | sudo php --global');
-		printfln('$ curl ' . INSTALLER_URL .' | ATOUM_PATH=/home/me php');
-		return 0;
-	}
+        return 0;
+    }
 
-	printfln('>> <yellow>Checking requirements...');
-	if(false === checkRequirements($args)) {
-		return 1;
-	}
+    printfln('>> <yellow>Checking requirements...');
+    if(false === checkRequirements($args)) {
+        return 1;
+    }
 
-	if(true === in_array('--check', $args)) {
-		return 0;
-	}
-	
-	if(true === in_array('--phar', $args)) {
-		printfln('>> <yellow>Installing PHAR...');
+    if(true === in_array('--check', $args)) {
+        return 0;
+    }
+    
+    if(true === in_array('--phar', $args)) {
+        printfln('>> <yellow>Installing PHAR...');
 
-		copy(ATOUM_PHAR_URL, getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);		
+        copy(ATOUM_PHAR_URL, getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);        
 
-		if(true === in_array('--global', $args)) {
-			if('\\' === DIRECTORY_SEPARATOR) {
-				printfln('>> <red>Windows users, please let me know where I should put the file for a global install');
-	
-				return 1;	
-			} else {
-				if(false === is_dir(ATOUM_PATH)) {
-					mkdir(ATOUM_PATH, true);
-				}
-				
-				$phar = ATOUM_PATH . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME;
-				copy(getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME, $phar);
-				unlink(getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);
+        if(true === in_array('--global', $args)) {
+            if('\\' === DIRECTORY_SEPARATOR) {
+                printfln('>> <red>Windows users, please let me know where I should put the file for a global install');
+    
+                return 1;    
+            } else {
+                if(false === is_dir(ATOUM_PATH)) {
+                    mkdir(ATOUM_PATH, true);
+                }
+                
+                $phar = ATOUM_PATH . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME;
+                copy(getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME, $phar);
+                unlink(getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);
 
-				$path = ATOUM_PATH . DIRECTORY_SEPARATOR . 'atoum';
-				if(true === is_file($path)) {
-					unlink($path);
-				}
-					
-				$bin = fopen($path, 'w+');
-				fwrite($bin, <<<BIN
+                $path = ATOUM_PATH . DIRECTORY_SEPARATOR . 'atoum';
+                if(true === is_file($path)) {
+                    unlink($path);
+                }
+                    
+                $bin = fopen($path, 'w+');
+                fwrite($bin, <<<BIN
 #!/bin/sh
 php $phar
 
 BIN
 );
-				fclose($bin);
-				chmod($path, 0751);
-				
-				if(true === file_exists(ATOUM_SYMLINK)) {
-                        	        unlink(ATOUM_SYMLINK);
-                        	}
-				ppassthru('ln -s ' . $path . ' ' . ATOUM_SYMLINK);
-				
-				printfln('>> <green>atoum PHAR path : <yellow>' . $phar);
-				printfln('>> <green>atoum bin path : <yellow>' . $path . ' -> ' . ATOUM_SYMLINK); 
-			}	
-		} else {
-			printfln('>> <green>atoum PHAR path : <yellow>' . getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);
-                       	printfln('>> <green>usage : <yellow>php ' . ATOUM_PHAR_NAME);
-		}
-	} else {
-		printfln('>> <yellow>Installing sources...');
+                fclose($bin);
+                chmod($path, 0751);
+                
+                if(true === file_exists(ATOUM_SYMLINK)) {
+                    unlink(ATOUM_SYMLINK);
+                }
+                ppassthru('ln -s ' . $path . ' ' . ATOUM_SYMLINK);
+                
+                printfln('>> <green>atoum PHAR path : <yellow>' . $phar);
+                printfln('>> <green>atoum bin path : <yellow>' . $path . ' -> ' . ATOUM_SYMLINK); 
+            }    
+        } else {
+            printfln('>> <green>atoum PHAR path : <yellow>' . getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);
+            printfln('>> <green>usage : <yellow>php ' . ATOUM_PHAR_NAME);
+        }
+    } else {
+        printfln('>> <yellow>Installing from sources...');
 
-		if(true === in_array('--global', $args)) {
-			if(false === is_dir(ATOUM_PATH)) {
-				ppassthru('git clone ' . ATOUM_GIT_URL . ' ' . ATOUM_PATH);
-			} else {
-				ppassthru('cd ' . ATOUM_PATH . ' && git pull origin master');
-			}
-	
-			if(true === file_exists(ATOUM_SYMLINK)) {
-				unlink(ATOUM_SYMLINK);
-			}
+        if(true === in_array('--global', $args)) {
+            if(false === is_dir(ATOUM_PATH)) {
+                ppassthru('git clone ' . ATOUM_GIT_URL . ' ' . ATOUM_PATH);
+            } else {
+                ppassthru('cd ' . ATOUM_PATH . ' && git pull origin master');
+            }
+    
+            if(true === file_exists(ATOUM_SYMLINK)) {
+                unlink(ATOUM_SYMLINK);
+            }
 
-			ppassthru('ln -s ' . ATOUM_PATH . DIRECTORY_SEPARATOR .'bin/atoum ' . ATOUM_SYMLINK);
-			printfln('>> <green>atoum sources path : <yellow>' . ATOUM_PATH);
-			printfln('>> <green>atoum bin path : <yellow>' . ATOUM_PATH . DIRECTORY_SEPARATOR .'bin/atoum -> ' . ATOUM_SYMLINK); 	
-		} else {
-			if(false === is_dir(getcwd() . DIRECTORY_SEPARATOR . 'atoum')) {
-				ppassthru('git clone ' . ATOUM_GIT_URL);
-			} else {
-				ppassthru('cd ' . getcwd() . DIRECTORY_SEPARATOR . 'atoum && git pull origin master');
-			}
+            ppassthru('ln -s ' . ATOUM_PATH . DIRECTORY_SEPARATOR .'bin/atoum ' . ATOUM_SYMLINK);
+            printfln('>> <green>atoum sources path : <yellow>' . ATOUM_PATH);
+            printfln('>> <green>atoum bin path : <yellow>' . ATOUM_PATH . DIRECTORY_SEPARATOR .'bin/atoum -> ' . ATOUM_SYMLINK);     
+        } else {
+            if(false === is_dir(getcwd() . DIRECTORY_SEPARATOR . 'atoum')) {
+                ppassthru('git clone ' . ATOUM_GIT_URL);
+            } else {
+                ppassthru('cd ' . getcwd() . DIRECTORY_SEPARATOR . 'atoum && git pull origin master');
+            }
 
-			printfln('>> <green>atoum sources path : <yellow>%s/atoum', getcwd());
-			printfln('>> <green>atoum bin path : <yellow>%s/atoum/bin/atoum', getcwd());
-		}
-	}
+            printfln('>> <green>atoum sources path : <yellow>%s/atoum', getcwd());
+            printfln('>> <green>atoum bin path : <yellow>%s/atoum/bin/atoum', getcwd());
+        }
+    }
 
-	printfln('>> <green>atoum was successfully installed. Enjoy!');
+    printfln('>> <green>atoum was successfully installed. Enjoy!');
 
-	return 0;
+    return 0;
+}
+
+function usage() {
+    $format = '%-15s : %s';
+    printfln($format, '--global', 'Install atoum as a global command');
+    printfln($format, '--phar', 'Install atoum as a PHAR archive');
+    printfln($format, '--source', 'Install atoum from sources <yellow>(default)');
+    printfln($format, '--check', 'Only run system requirements check');
+
+    printfln(PHP_EOL . 'Environment :');
+    printfln($format, 'ATOUM_PATH', 'Installation directory <yellow>(default : /usr/share)');
+    printfln($format, 'ATOUM_SYMLINK', 'atoum bin symlink path <yellow>(default: /usr/local/bin)');
+
+    printfln(PHP_EOL . 'Examples :');
+    printfln('$ curl ' . INSTALLER_URL .' | php --phar');
+    printfln('$ curl ' . INSTALLER_URL .' | sudo php --global');
+    printfln('$ curl ' . INSTALLER_URL .' | ATOUM_PATH=/home/me php');
 }
 
 function checkRequirements($args) {
-	$error = false;
+    $error = false;
 
-	if(50303 > PHP_VERSION_ID) {
-		printfln('>>> <red>You should install PHP 5.3.3+/5.4. Actual version is %s', phpversion());
-		$error = true;
-	} else {
-		printfln('>>> <green>Actual PHP version is %s', phpversion());
-	}
+    if(50303 > PHP_VERSION_ID) {
+        printfln('>>> <red>You should install PHP 5.3.3+/5.4. Actual version is %s', phpversion());
+        $error = true;
+    } else {
+        printfln('>>> <green>Actual PHP version is %s', phpversion());
+    }
 
-	if(false === extension_loaded('xdebug')) {
-		printfln('>>> <yellow>To generate code coverage report you need to install XDebug');
-	} else {
-		printfln('>>> <green>XDebug extension is enabled');
-		if(true === version_compare(phpversion('xdebug'), '2.2', '<')) {
-			printfln('>>> <yellow>You should install XDebug 2.2.*');
-			$error = true;		
-		} else {
-			printfln('>>> <green>XDebug version is %s', phpversion('xdebug'));
-		}
-	}
+    if(false === extension_loaded('xdebug')) {
+        printfln('>>> <yellow>To generate code coverage report you need to install XDebug');
+    } else {
+        printfln('>>> <green>XDebug extension is enabled');
+        if(true === version_compare(phpversion('xdebug'), '2.2', '<')) {
+            printfln('>>> <yellow>You should install XDebug 2.2.*');
+            $error = true;        
+        } else {
+            printfln('>>> <green>XDebug version is %s', phpversion('xdebug'));
+        }
+    }
 
-	if(false === checkPermissions($args)) {
-		$error = true;
-	} else {
-		printfln('>>> <green>You have required permissions');
-	}
-	
-	return (false === $error);
+    if(false === checkPermissions($args)) {
+        $error = true;
+    } else {
+        printfln('>>> <green>You have required permissions');
+    }
+    
+    return (false === $error);
 }
 
 function checkPermissions($args) {
-	if(false != ($restrict = ini_get('open_basedir'))) {
-		printfln('>>> <yellow>open_basedir restriction : %s', $restrict);
-		printfln('>>>> To fix this issue, try to run : ');
-		printfln('>>>> <yellow>ATOUM_PATH=/an/allowed/path ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | ATOUM_PATH=/an/allowed/path php');
-		printfln('>>>> or');
-		printfln('>>>> <yellow>php -dopen_basedir= ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | php -dopen_basedir=');
-	}	
-	
-	if(true === in_array('--global', $args)) {
-		$paths = array(
-			'/usr/local/bin' => @is_writeable('/usr/local/bin'),
-                	dirname(ATOUM_PATH) => @is_writeable(dirname(ATOUM_PATH))
-        	);
-	} else {
-		$paths = array(
-			getcwd() => @is_writeable(getcwd())
-		);
-	}	
+    if(false != ($restrict = ini_get('open_basedir'))) {
+        printfln('>>> <yellow>open_basedir restriction : %s', $restrict);
+        printfln('>>>> To fix this issue, try to run : ');
+        printfln('>>>> <yellow>ATOUM_PATH=/an/allowed/path ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | ATOUM_PATH=/an/allowed/path php');
+        printfln('>>>> or');
+        printfln('>>>> <yellow>php -dopen_basedir= ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | php -dopen_basedir=');
+    }    
+    
+    if(true === in_array('--global', $args)) {
+        $paths = array(
+            '/usr/local/bin' => @is_writeable('/usr/local/bin'),
+                    dirname(ATOUM_PATH) => @is_writeable(dirname(ATOUM_PATH))
+            );
+    } else {
+        $paths = array(
+            getcwd() => @is_writeable(getcwd())
+        );
+    }    
         
-	if(true === in_array(false, $paths)) {
-               $paths = implode(', ', array_keys(array_filter($paths, function($v) { return (false === $v);  })));
-               printfln('>>> <red>You don\'t have permission to write to <yellow>%s', $paths);
+    if(true === in_array(false, $paths)) {
+       $paths = implode(', ', array_keys(array_filter($paths, function($v) { return (false === $v);  })));
+       printfln('>>> <red>You don\'t have permission to write to <yellow>%s', $paths);
 
-               return false;
-        }
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 function ppassthru($cmd) {
-	printfln('>>> <yellow>' . $cmd);
-	passthru($cmd);
+    printfln('>>> <yellow>' . $cmd);
+
+    $status = 0;
+    passthru($cmd, $status);
+
+    return $status;
 }
 
 function printfln($line) {
-	$args = array_slice(func_get_args(), 1);
+    $args = array_slice(func_get_args(), 1);
 
-        $line = call_user_func_array(
-                'sprintf',
-                array_merge(
-                        array($line),
-                        $args
-                )
+    $line = call_user_func_array(
+        'sprintf',
+        array_merge(
+            array($line),
+            $args
+        )
+    );
+    
+    $support = '\\' === DIRECTORY_SEPARATOR ? false !== getenv('ANSICON') : true;
+
+    if(true === $support) {
+        $line = preg_replace_callback(
+            '/\<(red|green|yellow|blue|clear)\>/',
+            function($matches) {
+                $colors = array(
+                    'red' => 31,
+                    'green' => 32,
+                    'yellow' => 33,
+                    'blue' => 34
+                );                
+                $color = $matches[1];
+                
+                if('clear' === $color) {
+                    return "\033[0m";
+                } else {
+                    return true === isset($colors[$matches[1]]) ? "\033[0;" . $colors[$matches[1]] . 'm' : '';
+                }    
+            },
+            $line
         );
-	
-	$support = '\\' === DIRECTORY_SEPARATOR ? false !== getenv('ANSICON') : true;
 
-	if(true === $support) {
-		$line = preg_replace_callback(
-	                '/\<(red|green|yellow|blue|clear)\>/',
-        	        function($matches) {
-                	        $colors = array(
-					'red' => 31,
-					'green' => 32,
-					'yellow' => 33,
-					'blue' => 34
-				);				
-				$color = $matches[1];
-				
-				if('clear' === $color) {
-					return "\033[0m";
-				} else {
-					return true === isset($colors[$matches[1]]) ? "\033[0;" . $colors[$matches[1]] . 'm' : '';
-				}	
-	                },
-			$line
-        	);
+        $line .= "\033[0m";
+    }
 
-		$line .= "\033[0m";
-	}
-
-	$line .= PHP_EOL;
-	
-	print $line;
+    $line .= PHP_EOL;
+    
+    print $line;
 }
