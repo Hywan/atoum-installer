@@ -39,7 +39,7 @@ function install($args) {
 	}
 
 	printfln('>> <yellow>Checking requirements...');
-	if(false === checkRequirements()) {
+	if(false === checkRequirements($args)) {
 		return 1;
 	}
 
@@ -58,10 +58,6 @@ function install($args) {
 	
 				return 1;	
 			} else {
-				if(false === checkPermissions()) {
-                                	return 1;
-                        	}
-
 				if(false === is_dir(ATOUM_PATH)) {
 					mkdir(ATOUM_PATH, true);
 				}
@@ -101,10 +97,6 @@ BIN
 		printfln('>> <yellow>Installing sources...');
 
 		if(true === in_array('--global', $args)) {
-			if(false === checkPermissions()) {
-				return 1;
-			}
-			
 			if(false === is_dir(ATOUM_PATH)) {
 				ppassthru('git clone ' . ATOUM_GIT_URL . ' ' . ATOUM_PATH);
 			} else {
@@ -135,7 +127,7 @@ BIN
 	return 0;
 }
 
-function checkRequirements() {
+function checkRequirements($args) {
 	$error = false;
 
 	if(50303 > PHP_VERSION_ID) {
@@ -157,7 +149,7 @@ function checkRequirements() {
 		}
 	}
 
-	if(false === checkPermissions()) {
+	if(false === checkPermissions($args)) {
 		$error = true;
 	} else {
 		printfln('>>> <green>You have required permissions');
@@ -166,7 +158,7 @@ function checkRequirements() {
 	return (false === $error);
 }
 
-function checkPermissions() {
+function checkPermissions($args) {
 	if(false != ($restrict = ini_get('open_basedir'))) {
 		printfln('>> <yellow>open_basedir restriction : %s', $restrict);
 		printfln('>>> To fix this issue, try to run : ');
@@ -174,11 +166,17 @@ function checkPermissions() {
 		printfln('>>> or');
 		printfln('>>> <yellow>php -dopen_basedir= ./installer <clear>or <yellow>curl http://' . INSTALLER_URL . ' | php -dopen_basedir=');
 	}	
-
-	$paths = array(
-		'/usr/local/bin' => @is_writeable('/usr/local/bin'),
-                dirname(ATOUM_PATH) => @is_writeable(dirname(ATOUM_PATH))
-        );
+	
+	if(true === in_array('--global', $args)) {
+		$paths = array(
+			'/usr/local/bin' => @is_writeable('/usr/local/bin'),
+                	dirname(ATOUM_PATH) => @is_writeable(dirname(ATOUM_PATH))
+        	);
+	} else {
+		$paths = array(
+			getcwd() => @is_writeable(getcwd())
+		);
+	}	
         
 	if(true === in_array(false, $paths)) {
                $paths = implode(', ', array_keys(array_filter($paths, function($v) { return (false === $v);  })));
