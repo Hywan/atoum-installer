@@ -166,17 +166,20 @@ function checkRequirements() {
 }
 
 function checkPermissions() {
-	if(false !== ($restrict = ini_get('open_basedir'))) {
+	if(false != ($restrict = ini_get('open_basedir'))) {
 		printfln('>> <yellow>open_basedir restriction : %s', $restrict);
-		printfln('>>> To fix this issue, try to run <yellow>ATOUM_PATH=/an/allowed/path ./installer <clear>or <yellow>curl http://url | ATOUM_PATH=/an/allowed/path php');
+		printfln('>>> To fix this issue, try to run : ');
+		printfln('>>> <yellow>ATOUM_PATH=/an/allowed/path ./installer <clear>or <yellow>curl http://url | ATOUM_PATH=/an/allowed/path php');
+		printfln('>>> or');
+		printfln('>>> <yellow>php -dopen_basedir= ./installer <clear>or <yellow>curl http://url | php -dopen_basedir=');
 	}	
 
 	$paths = array(
 		'/usr/local/bin' => @is_writeable('/usr/local/bin'),
-                dirname(ATOUM_PATH) => @is_writeable('/usr/share')
+                dirname(ATOUM_PATH) => @is_writeable(dirname(ATOUM_PATH))
         );
-
-        if(true === in_array(false, $paths)) {
+        
+	if(true === in_array(false, $paths)) {
                $paths = implode(', ', array_keys(array_filter($paths, function($v) { return (false === $v);  })));
                printfln('>> <red>You don\'t have permission to write to <yellow>%s', $paths);
 
