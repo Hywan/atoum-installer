@@ -168,6 +168,7 @@ function checkRequirements() {
 function checkPermissions() {
 	if(false !== ($restrict = ini_get('open_basedir'))) {
 		printfln('>> <yellow>open_basedir restriction : %s', $restrict);
+		printfln('>>> To fix this issue, try to run <yellow>ATOUM_PATH=/an/allowed/path ./installer <clear>or <yellow>curl http://url | ATOUM_PATH=/an/allowed/path php');
 	}	
 
 	$paths = array(
@@ -205,7 +206,7 @@ function printfln($line) {
 
 	if(true === $support) {
 		$line = preg_replace_callback(
-	                '/\<(red|green|yellow|blue)\>/',
+	                '/\<(red|green|yellow|blue|clear)\>/',
         	        function($matches) {
                 	        $colors = array(
 					'red' => 31,
@@ -215,7 +216,11 @@ function printfln($line) {
 				);				
 				$color = $matches[1];
 				
-				return true === isset($colors[$matches[1]]) ? "\033[0;" . $colors[$matches[1]] . 'm' : '';	
+				if('clear' === $color) {
+					return "\033[0m";
+				} else {
+					return true === isset($colors[$matches[1]]) ? "\033[0;" . $colors[$matches[1]] . 'm' : '';
+				}	
 	                },
 			$line
         	);
