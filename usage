@@ -1,4 +1,4 @@
-$ ./installer --usage
+$ ./installer 
 > atoum installer
 > The modern, simple and intuitive PHP 5.3+ unit testing framework.
 --global        : Install atoum as a global command
@@ -9,3 +9,8 @@ $ ./installer --usage
 Environment :
 ATOUM_PATH      : Installation directory (default : /usr/share)
 ATOUM_SYMLINK   : atoum bin symlink path (default: /usr/local/bin)
+
+Examples :
+$ curl https://raw.github.com/gist/3934569/b090b7bfe7cf04b35e0f6f1d9161d0ba55b8b7d6/installer | php --phar
+$ curl https://raw.github.com/gist/3934569/b090b7bfe7cf04b35e0f6f1d9161d0ba55b8b7d6/installer | sudo php --global
+$ curl https://raw.github.com/gist/3934569/b090b7bfe7cf04b35e0f6f1d9161d0ba55b8b7d6/installer | ATOUM_PATH=/home/me php

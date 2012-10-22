@@ -29,6 +29,11 @@ function install($args) {
 		printfln(PHP_EOL . 'Environment :');
 		printfln($format, 'ATOUM_PATH', 'Installation directory <yellow>(default : /usr/share)');
 		printfln($format, 'ATOUM_SYMLINK', 'atoum bin symlink path <yellow>(default: /usr/local/bin)');
+		
+		printfln(PHP_EOL . 'Examples :');
+		printfln('$ curl https://raw.github.com/gist/3934569/b090b7bfe7cf04b35e0f6f1d9161d0ba55b8b7d6/installer | php --phar');
+		printfln('$ curl https://raw.github.com/gist/3934569/b090b7bfe7cf04b35e0f6f1d9161d0ba55b8b7d6/installer | sudo php --global');
+		printfln('$ curl https://raw.github.com/gist/3934569/b090b7bfe7cf04b35e0f6f1d9161d0ba55b8b7d6/installer | ATOUM_PATH=/home/me php');
 		return 0;
 	}
 
