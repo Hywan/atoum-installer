@@ -166,9 +166,13 @@ function checkRequirements() {
 }
 
 function checkPermissions() {
+	if(false !== ($restrict = ini_get('open_basedir'))) {
+		printfln('>> <yellow>open_basedir restriction : %s', $restrict);
+	}	
+
 	$paths = array(
-		'/usr/local/bin' => is_writeable('/usr/local/bin'),
-                dirname(ATOUM_PATH) => is_writeable('/usr/share')
+		'/usr/local/bin' => @is_writeable('/usr/local/bin'),
+                dirname(ATOUM_PATH) => @is_writeable('/usr/share')
         );
 
         if(true === in_array(false, $paths)) {
