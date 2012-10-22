@@ -1,3 +1,28 @@
+## atoum installer
+
+### Usage
+```shell
+$ ./installer --usage
+$ curl https://raw.github.com/gist/3934569/installer | php -- --usage
+> atoum installer
+> The modern, simple and intuitive PHP 5.3+ unit testing framework.
+--global        : Install atoum as a global command
+--phar          : Install atoum as a PHAR archive
+--source        : Install atoum from sources (default)
+--check         : Only run system requirements check
+
+Environment :
+ATOUM_PATH      : Installation directory (default : /usr/share)
+ATOUM_SYMLINK   : atoum bin symlink path (default: /usr/local/bin)
+
+Examples :
+$ curl https://raw.github.com/gist/3934569/installer | php -- --phar
+$ curl https://raw.github.com/gist/3934569/installer | sudo php -- --global
+$ curl https://raw.github.com/gist/3934569/installer | ATOUM_PATH=/home/me php
+```
+
+### Example output
+```shell
 $ sudo ./installer --global
 > atoum installer
 > The modern, simple and intuitive PHP 5.3+ unit testing framework.
@@ -29,3 +54,4 @@ $ sudo ./installer --global --phar
 >> atoum PHAR path : /usr/share/atoum/mageekguy.atoum.phar
 >> atoum bin path : /usr/share/atoum/atoum -> /usr/local/bin/atoum
 >> atoum was successfully installed. Enjoy!
+```
