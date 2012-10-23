@@ -80,9 +80,17 @@ BIN
             if(false === checkDirectoryExists(ATOUM_PATH)) {
                 printfln('>> <yellow>Cloning source repository...');
                 ppassthru('git clone ' . ATOUM_GIT_URL . ' ' . ATOUM_PATH);
+
+                $output = null;
+                exec('git rev-parse HEAD', $output);
+                printfln('>>> <yellow>Installed atoum master@%s', substr(implode('', $output), 0, 7));
             } else {
                 printfln('>> <yellow>Updating sources...');
                 ppassthru('cd ' . ATOUM_PATH . ' && git fetch origin && git reset --hard origin/master');
+
+                $output = null;
+                exec('git rev-parse HEAD', $output);
+                printfln('>>> <yellow>Updated atoum to master@%s', substr(implode('', $output), 0, 7));
             }
     
             if(true === checkFileExists(ATOUM_SYMLINK)) {
@@ -95,8 +103,16 @@ BIN
         } else {
             if(false === checkDirectoryExists(getcwd() . DIRECTORY_SEPARATOR . 'atoum')) {
                 ppassthru('git clone ' . ATOUM_GIT_URL);
+
+                $output = null;
+                exec('git rev-parse HEAD', $output);
+                printfln('>>> <yellow>Installed atoum master@%s', substr(implode('', $output), 0, 7));
             } else {
                 ppassthru('cd ' . getcwd() . DIRECTORY_SEPARATOR . 'atoum && git pull origin master');
+
+                $output = null;
+                exec('git rev-parse HEAD', $output);
+                printfln('>>> <yellow>Updated atoum to master@%s', substr(implode('', $output), 0, 7));
             }
 
             printfln('>> <green>atoum sources path : <yellow>%s/atoum', getcwd());
@@ -214,9 +230,9 @@ function getPaths(array $args) {
 
 function checkDirectoryExists($dir) {
     if(false === ($exists = is_dir($dir))) {
-        printfln('>> <yellow>Directory %s does not exist.', $dir);
+        printfln('>>> <yellow>Directory %s does not exist.', $dir);
     } else {
-        printfln('>> <yellow>Directory %s exists.', $dir);
+        printfln('>>> <yellow>Directory %s exists.', $dir);
     }
 
     return $exists;
@@ -224,16 +240,16 @@ function checkDirectoryExists($dir) {
 
 function checkAndCreateDirectory($dir) {
     if(false === checkDirectoryExists($dir)) {
-        printfln('>> <yellow>Creating directory %s', $dir);
+        printfln('>>> <yellow>Creating directory %s', $dir);
         mkdir($dir, true);
     }
 }
 
 function checkFileExists($file) {
     if(false === ($exists = is_file($file))) {
-        printfln('>> <yellow>File %s does not exist.', $file);
+        printfln('>>> <yellow>File %s does not exist.', $file);
     } else {
-        printfln('>> <yellow>File %s exists.', $file);
+        printfln('>>> <yellow>File %s exists.', $file);
     }
 
     return $exists;
