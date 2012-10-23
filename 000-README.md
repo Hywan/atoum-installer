@@ -12,6 +12,7 @@ $ curl https://raw.github.com/gist/3934569/installer | php -- --usage
 --check         : Only run system requirements check
 
 Environment :
+ATOUM_GIT_URL   : Git repository (default : git://github.com/mageekguy/atoum.git)
 ATOUM_PATH      : Installation directory (default : /usr/share)
 ATOUM_SYMLINK   : atoum bin symlink path (default: /usr/local/bin)
 
