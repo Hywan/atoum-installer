@@ -3,8 +3,8 @@
 define('INSTALLER_URL', 'https://raw.github.com/gist/3934569/installer');
 
 define('ATOUM_PHAR_NAME', 'mageekguy.atoum.phar');
-define('ATOUM_PHAR_URL', 'http://downloads.atoum.org/nightly/' . ATOUM_PHAR_NAME);
 
+define('ATOUM_PHAR_URL', (($phar = getenv('ATOUM_PHAR_URL')) ? $phar : 'http://downloads.atoum.org/nightly/' . ATOUM_PHAR_NAME));
 define('ATOUM_GIT_URL', (($url = getenv('ATOUM_GIT_URL')) ? $url : 'git://github.com/mageekguy/atoum.git'));
 define('ATOUM_PATH', (($path = getenv('ATOUM_PATH')) ? $path : '/usr/share') . DIRECTORY_SEPARATOR . 'atoum');
 define('ATOUM_SYMLINK', (($symlink = getenv('ATOUM_SYMLINK')) ? $symlink : '/usr/local/bin') . DIRECTORY_SEPARATOR . 'atoum');
@@ -36,7 +36,7 @@ function install(array $args) {
     }
     
     if(true === in_array('--phar', $args)) {
-        printfln('>> <yellow>Installing PHAR...');
+        printfln('>> <yellow>Installing PHAR from ' . ATOUM_PHAR_URL . '...');
 
         copy(ATOUM_PHAR_URL, getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);        
 
