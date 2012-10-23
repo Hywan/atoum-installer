@@ -1,5 +1,5 @@
 Feature: Install PHAR
-  Scenario: Install as PHAR in current directory
+  Scenario: Install as PHAR in the current directory
     Given I run "php -n ./installer --phar"
      Then I should see output matching
         """
@@ -21,7 +21,7 @@ Feature: Install PHAR
     Given I run "rm mageekguy.atoum.phar"
      Then The command should exit with success status
 
-  Scenario: Install as PHAR in current directory from a custom URL
+  Scenario: Install as PHAR in the current directory from a custom URL
     Given I run "ATOUM_PHAR_URL=http://custom.url.org/mageekguy.atoum.phar php -n ./installer --phar"
      Then I should see output matching
         """
