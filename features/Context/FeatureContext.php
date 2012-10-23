@@ -46,8 +46,8 @@ class FeatureContext extends BehatContext {
         $expected = (string)$string;
         $actual = $this->output;
         $matches = array();
-        if(false == preg_match_all('/' . $expected . '/m', $actual, $matches)) {
-            $expected = '(' . strlen($expected) . ')' . PHP_EOL . $expected .PHP_EOL . PHP_EOL;
+        if(false == preg_match_all('/' . $expected . '/', $actual, $matches)) {
+            $expected = PHP_EOL . $expected .PHP_EOL . PHP_EOL;
             $actual = '(' . strlen($actual) . ')' . PHP_EOL . $actual . PHP_EOL . PHP_EOL;
 
             throw new \Exception(sprintf('String %sDoes not match %s', $actual, $expected));

@@ -1,4 +1,7 @@
 Feature: Install PHAR
+  Background:
+    Given I run "test -f ./mageekguy.atoum.phar && rm -rf ./mageekguy.atoum.phar"
+
   Scenario: Install as PHAR in the current directory
     Given I run "php -n ./installer --phar"
      Then I should see output matching
@@ -18,7 +21,7 @@ Feature: Install PHAR
         """
     Given I run "php mageekguy.atoum.phar"
      Then The command should exit with success status
-    Given I run "rm mageekguy.atoum.phar"
+    Given I run "rm ./mageekguy.atoum.phar"
      Then The command should exit with success status
 
   Scenario: Install as PHAR in the current directory from a custom URL
