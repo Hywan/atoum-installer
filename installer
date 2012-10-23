@@ -16,7 +16,7 @@ if(false !== getenv('ATOUM_PATH') || false !== getenv('ATOUM_SYMLINK')) {
 array_shift($argv);
 exit(install($argv));
 
-function install($args) {
+function install(array $args) {
     printfln('> <green>atoum installer');    
     printfln('> <blue>The modern, simple and intuitive PHP 5.3+ unit testing framework.');
 
@@ -41,42 +41,34 @@ function install($args) {
         copy(ATOUM_PHAR_URL, getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);        
 
         if(true === in_array('--global', $args)) {
-            if('\\' === DIRECTORY_SEPARATOR) {
-                printfln('>> <red>Windows users, please let me know where I should put the file for a global install');
-    
-                return 1;    
-            } else {
-                if(false === is_dir(ATOUM_PATH)) {
-                    mkdir(ATOUM_PATH, true);
-                }
-                
-                $phar = ATOUM_PATH . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME;
-                copy(getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME, $phar);
-                unlink(getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);
+            checkAndCreateDirectory(ATOUM_PATH);
 
-                $path = ATOUM_PATH . DIRECTORY_SEPARATOR . 'atoum';
-                if(true === is_file($path)) {
-                    unlink($path);
-                }
-                    
-                $bin = fopen($path, 'w+');
-                fwrite($bin, <<<BIN
+            $phar = ATOUM_PATH . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME;
+            copy(getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME, $phar);
+            unlink(getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);
+
+            $path = ATOUM_PATH . DIRECTORY_SEPARATOR . 'atoum';
+            if(true === checkFileExists($path)) {
+                unlink($path);
+            }
+
+            $bin = fopen($path, 'w+');
+            fwrite($bin, <<<BIN
 #!/bin/sh
-php $phar
+php $phar $*
 
 BIN
 );
-                fclose($bin);
-                chmod($path, 0751);
-                
-                if(true === file_exists(ATOUM_SYMLINK)) {
-                    unlink(ATOUM_SYMLINK);
-                }
-                ppassthru('ln -s ' . $path . ' ' . ATOUM_SYMLINK);
-                
-                printfln('>> <green>atoum PHAR path : <yellow>' . $phar);
-                printfln('>> <green>atoum bin path : <yellow>' . $path . ' -> ' . ATOUM_SYMLINK); 
-            }    
+            fclose($bin);
+            chmod($path, 0751);
+
+            if(true === checkFileExists(ATOUM_SYMLINK)) {
+                unlink(ATOUM_SYMLINK);
+            }
+            ppassthru('ln -s ' . $path . ' ' . ATOUM_SYMLINK);
+
+            printfln('>> <green>atoum PHAR path : <yellow>' . $phar);
+            printfln('>> <green>atoum bin path : <yellow>' . $path . ' -> ' . ATOUM_SYMLINK);
         } else {
             printfln('>> <green>atoum PHAR path : <yellow>' . getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);
             printfln('>> <green>usage : <yellow>php ' . ATOUM_PHAR_NAME);
@@ -85,13 +77,15 @@ BIN
         printfln('>> <yellow>Installing from sources...');
 
         if(true === in_array('--global', $args)) {
-            if(false === is_dir(ATOUM_PATH)) {
+            if(false === checkDirectoryExists(ATOUM_PATH)) {
+                printfln('>> <yellow>Cloning source repository...');
                 ppassthru('git clone ' . ATOUM_GIT_URL . ' ' . ATOUM_PATH);
             } else {
-                ppassthru('cd ' . ATOUM_PATH . ' && git pull origin master');
+                printfln('>> <yellow>Updating sources...');
+                ppassthru('cd ' . ATOUM_PATH . ' && git fetch origin && git reset --hard origin/master');
             }
     
-            if(true === file_exists(ATOUM_SYMLINK)) {
+            if(true === checkFileExists(ATOUM_SYMLINK)) {
                 unlink(ATOUM_SYMLINK);
             }
 
@@ -99,7 +93,7 @@ BIN
             printfln('>> <green>atoum sources path : <yellow>' . ATOUM_PATH);
             printfln('>> <green>atoum bin path : <yellow>' . ATOUM_PATH . DIRECTORY_SEPARATOR .'bin/atoum -> ' . ATOUM_SYMLINK);     
         } else {
-            if(false === is_dir(getcwd() . DIRECTORY_SEPARATOR . 'atoum')) {
+            if(false === checkDirectoryExists(getcwd() . DIRECTORY_SEPARATOR . 'atoum')) {
                 ppassthru('git clone ' . ATOUM_GIT_URL);
             } else {
                 ppassthru('cd ' . getcwd() . DIRECTORY_SEPARATOR . 'atoum && git pull origin master');
@@ -132,7 +126,7 @@ function usage() {
     printfln('$ curl ' . INSTALLER_URL .' | ATOUM_PATH=/home/me php');
 }
 
-function checkRequirements($args) {
+function checkRequirements(array $args) {
     $error = false;
 
     if(50303 > PHP_VERSION_ID) {
@@ -140,6 +134,22 @@ function checkRequirements($args) {
         $error = true;
     } else {
         printfln('>>> <green>Actual PHP version is %s', phpversion());
+    }
+
+    if(false === extension_loaded('phar')) {
+        $color = in_array('--phar', $args) ? 'red' : 'yellow';
+        printfln('>>> <%s>To use the PHAR archive you need to enable the PHAR extension', $color);
+        if(true === in_array('--phar', $args)) {
+            $error = true;
+        }
+    } else {
+        printfln('>>> <green>PHAR extension is enabled');
+    }
+
+    if(false === extension_loaded('xml')) {
+        printfln('>>> <yellow>To generate Xunit report you need to install XML extension');
+    } else {
+        printfln('>>> <green>XML extension is enabled');
     }
 
     if(false === extension_loaded('xdebug')) {
@@ -157,13 +167,15 @@ function checkRequirements($args) {
     if(false === checkPermissions($args)) {
         $error = true;
     } else {
-        printfln('>>> <green>You have required permissions');
+        $paths = getPaths($args);
+        $paths = implode(', ', array_keys(array_filter($paths, function($v) { return (true === $v);  })));
+        printfln('>>> <green>You have required permissions on <yellow>%s', $paths);
     }
     
     return (false === $error);
 }
 
-function checkPermissions($args) {
+function checkPermissions(array $args) {
     if(false != ($restrict = ini_get('open_basedir'))) {
         printfln('>>> <yellow>open_basedir restriction : %s', $restrict);
         printfln('>>>> To fix this issue, try to run : ');
@@ -172,16 +184,7 @@ function checkPermissions($args) {
         printfln('>>>> <yellow>php -dopen_basedir= ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | php -dopen_basedir=');
     }    
     
-    if(true === in_array('--global', $args)) {
-        $paths = array(
-            '/usr/local/bin' => @is_writeable('/usr/local/bin'),
-                    dirname(ATOUM_PATH) => @is_writeable(dirname(ATOUM_PATH))
-            );
-    } else {
-        $paths = array(
-            getcwd() => @is_writeable(getcwd())
-        );
-    }    
+    $paths = getPaths($args);
         
     if(true === in_array(false, $paths)) {
        $paths = implode(', ', array_keys(array_filter($paths, function($v) { return (false === $v);  })));
@@ -191,6 +194,48 @@ function checkPermissions($args) {
     }
 
     return true;
+}
+
+function getPaths(array $args) {
+    if(true === in_array('--global', $args)) {
+        $paths = array(
+            '/usr/local/bin' => @is_writeable('/usr/local/bin'),
+            dirname(ATOUM_PATH) => @is_writeable(dirname(ATOUM_PATH))
+        );
+    } else {
+        $paths = array(
+            getcwd() => @is_writeable(getcwd())
+        );
+    }
+
+    return $paths;
+}
+
+function checkDirectoryExists($dir) {
+    if(false === ($exists = is_dir($dir))) {
+        printfln('>> <yellow>Directory %s does not exist.', $dir);
+    } else {
+        printfln('>> <yellow>Directory %s exists.', $dir);
+    }
+
+    return $exists;
+}
+
+function checkAndCreateDirectory($dir) {
+    if(false === checkDirectoryExists($dir)) {
+        printfln('>> <yellow>Creating directory %s', $dir);
+        mkdir($dir, true);
+    }
+}
+
+function checkFileExists($file) {
+    if(false === ($exists = is_file($file))) {
+        printfln('>> <yellow>File %s does not exist.', $file);
+    } else {
+        printfln('>> <yellow>File %s exists.', $file);
+    }
+
+    return $exists;
 }
 
 function ppassthru($cmd) {
