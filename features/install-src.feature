@@ -14,7 +14,7 @@ Feature: Install sources
         >> Installing from sources\.\.\.
         >>> Directory [^\s]* does not exist.
         >>> git clone git:\/\/github\.com\/mageekguy\/atoum\.git
-        Cloning into atoum\.\.\.
+        Cloning into '?atoum'?\.\.\.
         >>> Installed atoum master@[a-z0-9]{7}
         >> atoum sources path \: [^\s]*atoum
         >> atoum bin path \: [^\s]*atoum\/bin\/atoum
@@ -40,7 +40,7 @@ Feature: Install sources
         >> Installing from sources\.\.\.
         >>> Directory [^\s]* does not exist.
         >>> git clone git:\/\/github\.com\/jubianchi\/atoum\.git
-        Cloning into atoum\.\.\.
+        Cloning into '?atoum'?\.\.\.
         >>> Installed atoum master@[a-z0-9]{7}
         >> atoum sources path \: [^\s]*atoum
         >> atoum bin path \: [^\s]*atoum\/bin\/atoum
