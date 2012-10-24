@@ -7,4 +7,4 @@ php:
 script:
     - curl -s https://getcomposer.org/installer | php
     - php composer.phar install --dev --ansi
-    - vendor/bin/behat --profile=travis @BehatViewerBundle
+    - vendor/bin/behat
