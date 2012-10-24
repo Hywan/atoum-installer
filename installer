@@ -40,7 +40,7 @@ array_shift($argv);
 exit(execute($argv, $errorHandler, $silence));
 
 function execute(array $args, $handler, &$silence) {
-    error_reporting(0);
+    //error_reporting(0);
     set_error_handler($handler);
 
     printfln('> <green>atoum installer');
@@ -282,7 +282,7 @@ function ppassthru($cmd) {
 function printfln($line) {
     $line = call_user_func_array('sprintf', func_get_args());
 
-    $support = '\\' === DIRECTORY_SEPARATOR ? false !== getenv('ANSICON') : (function_exists('posix_isatty') && posix_isatty(STDOUT));
+    $support = '\\' === DIRECTORY_SEPARATOR ? false !== getenv('ANSICON') : true;
 
     $colors = array(
         'red' => 31,
