@@ -1,5 +1,8 @@
 ## atoum installer
 
+**This installer is in heavy development and is currently only working on Unix systems as it relies on system commands.**
+**If you find any bug, please [fill in an issue](https://github.com/jubianchi/atoum-installer/issues) or join us on ##atoum on Freenode IRC network to discuss it.**
+
 ### Usage
 ```shell
 $ ./installer --usage
@@ -22,37 +25,24 @@ $ curl https://raw.github.com/gist/3934569/installer | sudo php -- --global
 $ curl https://raw.github.com/gist/3934569/installer | ATOUM_PATH=/home/me php
 ```
 
-### Example output
-```shell
-$ sudo ./installer --global
-> atoum installer
-> The modern, simple and intuitive PHP 5.3+ unit testing framework.
->> Checking requirements...
->>> Actual PHP version is 5.4.6-1ubuntu1
->>> XDebug extension is enabled
->>> XDebug version is 2.2.1
->>> You have required permissions
->> Installing sources...
->>> cd /usr/share/atoum && git pull origin master
-From git://github.com/mageekguy/atoum
- * branch            master     -> FETCH_HEAD
-Already up-to-date.
->>> ln -s /usr/share/atoum/bin/atoum /usr/local/bin/atoum
->> atoum sources path : /usr/share/atoum
->> atoum bin path : /usr/share/atoum/bin/atoum -> /usr/local/bin/atoum
->> atoum was successfully installed. Enjoy!
+### Hacking
 
-$ sudo ./installer --global --phar
-> atoum installer
-> The modern, simple and intuitive PHP 5.3+ unit testing framework.
->> Checking requirements...
->>> Actual PHP version is 5.4.6-1ubuntu1
->>> XDebug extension is enabled
->>> XDebug version is 2.2.1
->>> You have required permissions
->> Installing PHAR...
->>> ln -s /usr/share/atoum/atoum /usr/local/bin/atoum
->> atoum PHAR path : /usr/share/atoum/mageekguy.atoum.phar
->> atoum bin path : /usr/share/atoum/atoum -> /usr/local/bin/atoum
->> atoum was successfully installed. Enjoy!
+The atoum installer is a simple PHP script handling all the process.
+As a PHP developper, you will be able to easily edit it.
+
+The script is tested with Behat and you will need to install some deps to get the tools :
+
+```shell
+$ curl -s https://getcomposer.org/installer | php
+$ php composer.phar install --dev
+```
+
+Once your environment is ready, you will be able to launch tests with a single command :
+
+```shell
+$ vendor/bin/behat
+
+# Or to launch a specific feature :
+
+$ vendor/bin/behat the/feature/path.feature
 ```
