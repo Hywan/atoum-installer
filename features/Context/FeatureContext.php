@@ -19,7 +19,7 @@ class FeatureContext extends BehatContext {
 
         $this->output = array_map('trim', $this->output);
 
-        $this->output = implode(PHP_EOL, (array)$this->output);
+        $this->output = trim(implode(PHP_EOL, (array)$this->output));
     }
 
     /**
@@ -27,11 +27,11 @@ class FeatureContext extends BehatContext {
      */
     public function iShouldSee(PyStringNode $string)
     {
-        if($this->output !== (string)$string) {
-            $expected = (string)$string;
-            $expected = '(' . strlen($expected) . ')' . PHP_EOL . $expected .PHP_EOL . PHP_EOL;
+        $actual = preg_replace("/\033\[[0-9]+;?[0-9]*m/", '', $this->output);
+        $expected = trim((string)$string);
 
-            $actual = $this->output;
+        if($actual !== $expected) {
+            $expected = '(' . strlen($expected) . ')' . PHP_EOL . $expected .PHP_EOL . PHP_EOL;
             $actual = '(' . strlen($actual) . ')' . PHP_EOL . $actual . PHP_EOL . PHP_EOL;
 
             throw new \Exception(sprintf('Expected %sGot %s', $expected, $actual));
@@ -43,8 +43,8 @@ class FeatureContext extends BehatContext {
      */
     public function iShouldSeeOutputMatching(PyStringNode $string)
     {
-        $expected = (string)$string;
-        $actual = $this->output;
+        $actual = preg_replace("/\033\[[0-9]+;?[0-9]*m/", '', $this->output);
+        $expected = trim((string)$string);
         $matches = array();
         if(false == preg_match_all('/' . $expected . '/', $actual, $matches)) {
             $expected = PHP_EOL . $expected .PHP_EOL . PHP_EOL;

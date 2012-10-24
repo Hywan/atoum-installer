@@ -16,7 +16,7 @@ Feature: Usage
         ATOUM_SYMLINK   : atoum bin symlink path (default: /usr/local/bin)
 
         Examples :
-        $ curl https://raw.github.com/gist/3934569/installer | php -- --phar
-        $ curl https://raw.github.com/gist/3934569/installer | sudo php -- --global
-        $ curl https://raw.github.com/gist/3934569/installer | ATOUM_PATH=/home/me php
+        $ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | php -- --phar
+        $ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | sudo php -- --global
+        $ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | ATOUM_PATH=/home/me php
         """

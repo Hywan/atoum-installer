@@ -210,7 +210,7 @@ function checkRequirements(array $args) {
 function checkPermissions(array $args) {
     if(false != ($restrict = ini_get('open_basedir'))) {
         printfln('>>> <yellow>open_basedir restriction : %s', $restrict);
-        printfln('>>>> To fix this issue, try to run : ');
+        printfln('>>>> To fix this issue, try to run :');
         printfln('>>>> <yellow>ATOUM_PATH=/an/allowed/path ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | ATOUM_PATH=/an/allowed/path php');
         printfln('>>>> or');
         printfln('>>>> <yellow>php -dopen_basedir= ./installer <clear>or <yellow>curl ' . INSTALLER_URL . ' | php -dopen_basedir=');
