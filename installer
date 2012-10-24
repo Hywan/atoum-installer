@@ -34,19 +34,18 @@ $errors = array (
     E_STRICT            => 'STRICT NOTICE',
     E_RECOVERABLE_ERROR => 'RECOVERABLE ERROR'
 );
-$errorHandler = function($code, $str, $file, $line) use($errors, &$silence) {
+
+error_reporting(0);
+set_error_handler(function($code, $str, $file, $line) use($errors, &$silence) {
     if(false === $silence) {
         printfln('<red>> [%s] %s (Line %d)', $errors[$code], $str, $line);
     }
-};
+});
 
 array_shift($argv);
-exit(execute($argv, $errorHandler, $silence));
+exit(execute($argv, $silence));
 
-function execute(array $args, $handler, &$silence) {
-    //error_reporting(0);
-    set_error_handler($handler);
-
+function execute(array $args, &$silence) {
     printfln('> <green>atoum installer');
     printfln('> <blue>The modern, simple and intuitive PHP 5.3+ unit testing framework.');
 
@@ -74,8 +73,6 @@ function execute(array $args, $handler, &$silence) {
     install($args);
 
     printfln('>> <green>atoum was successfully installed. Enjoy!');
-
-    restore_error_handler();
 
     return 0;
 }
@@ -286,7 +283,7 @@ function ppassthru($cmd) {
 function printfln($line) {
     $line = call_user_func_array('sprintf', func_get_args());
 
-    $support = '\\' === DIRECTORY_SEPARATOR ? false !== getenv('ANSICON') : true;
+    $support = '\\' === DIRECTORY_SEPARATOR ? false !== getenv('ANSICON') : (function_exists('posix_isatty') && true === posix_isatty(STDOUT));
 
     $colors = array(
         'red' => 31,
