@@ -10,6 +10,10 @@ define('ATOUM_PATH',            (($path = getenv('ATOUM_PATH')) ? $path : ATOUM_
 define('ATOUM_SYMLINK_DEFAULT', '/usr/local/bin');
 define('ATOUM_SYMLINK',         (($symlink = getenv('ATOUM_SYMLINK')) ? $symlink : ATOUM_SYMLINK_DEFAULT) . DIRECTORY_SEPARATOR . 'atoum');
 
+if(false === defined('STDOUT')) {
+    define('STDOUT', fopen('php://stdout', 'w'));
+}
+
 if(false !== getenv('ATOUM_PATH') || false !== getenv('ATOUM_SYMLINK')) {
     $argv[] = '--global';
 }
