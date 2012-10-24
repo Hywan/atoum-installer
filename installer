@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-define('INSTALLER_URL',         'https://raw.github.com/gist/3934569/installer');
+define('INSTALLER_URL',         'https://raw.github.com/jubianchi/atoum-installer/master/installer');
 define('ATOUM_PHAR_NAME',       'mageekguy.atoum.phar');
 define('ATOUM_PHAR_URL',        (($phar = getenv('ATOUM_PHAR_URL')) ? $phar : 'http://downloads.atoum.org/nightly/' . ATOUM_PHAR_NAME));
 define('ATOUM_GIT_URL',         (($url = getenv('ATOUM_GIT_URL')) ? $url : 'git://github.com/mageekguy/atoum.git'));
