@@ -136,7 +136,28 @@ function download(array $args) {
 function install(array $args) {
     if(true === in_array('--phar', $args)) {
         if(true === in_array('--global', $args)) {
-            if(true === checkFileExists(ATOUM_SYMLINK)) {
+            checkAndCreateDirectory(ATOUM_PATH);
+
+            $phar = ATOUM_PATH . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME;
+            copy(getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME, $phar);
+            unlink(getcwd() . DIRECTORY_SEPARATOR . ATOUM_PHAR_NAME);
+
+            $path = ATOUM_PATH . DIRECTORY_SEPARATOR . 'atoum';
+            if(true === checkFileExists($path)) {
+                unlink($path);
+            }
+            $bin = fopen($path, 'w+');
+                        fwrite($bin, <<<BIN
+#!/bin/sh
+php $phar $*
+
+BIN
+            );
+            fclose($bin);
+            chmod($path, 0751);
+
+
+            if(true === checkLinkExists(ATOUM_SYMLINK)) {
                 unlink(ATOUM_SYMLINK);
             }
             ppassthru('ln -s ' . $path . ' ' . ATOUM_SYMLINK);
@@ -149,7 +170,11 @@ function install(array $args) {
         }
     } else {
         if(true === in_array('--global', $args)) {
+            if(true === checkLinkExists(ATOUM_SYMLINK)) {
+                unlink(ATOUM_SYMLINK);
+            }
             ppassthru('ln -s ' . ATOUM_PATH . DIRECTORY_SEPARATOR .'bin/atoum ' . ATOUM_SYMLINK);
+
             printfln('>> <green>atoum sources path : <yellow>' . ATOUM_PATH);
             printfln('>> <green>atoum bin path : <yellow>' . ATOUM_PATH . DIRECTORY_SEPARATOR .'bin/atoum -> ' . ATOUM_SYMLINK);
         } else {
@@ -190,7 +215,7 @@ function checkRequirements(array $args) {
     } else {
         printfln('>>> <green>XDebug extension is enabled');
         if(true === version_compare(phpversion('xdebug'), '2.2', '<')) {
-            printfln('>>> <yellow>You should install XDebug 2.2.*');
+            printfln('>>> <red>You should install XDebug 2.2.*');
             $error = true;
         } else {
             printfln('>>> <green>XDebug version is %s', phpversion('xdebug'));
@@ -257,12 +282,22 @@ function checkDirectoryExists($dir) {
 function checkAndCreateDirectory($dir) {
     if(false === checkDirectoryExists($dir)) {
         printfln('>>> <yellow>Creating directory %s', $dir);
-        mkdir($dir, true);
+        mkdir($dir, 0755, true);
     }
 }
 
 function checkFileExists($file) {
     if(false === ($exists = is_file($file))) {
+        printfln('>>> <yellow>File %s does not exist.', $file);
+    } else {
+        printfln('>>> <yellow>File %s exists.', $file);
+    }
+
+    return $exists;
+}
+
+function checkLinkExists($file) {
+    if(false === ($exists = is_link($file))) {
         printfln('>>> <yellow>File %s does not exist.', $file);
     } else {
         printfln('>>> <yellow>File %s exists.', $file);
