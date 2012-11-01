@@ -147,14 +147,14 @@ function install(array $args) {
                 unlink($path);
             }
             $bin = fopen($path, 'w+');
-                        fwrite($bin, <<<BIN
+            fwrite($bin, <<<BIN
 #!/bin/sh
 php $phar $*
 
 BIN
             );
             fclose($bin);
-            chmod($path, 0751);
+            chmod($path, 0755);
 
 
             if(true === checkLinkExists(ATOUM_SYMLINK)) {
