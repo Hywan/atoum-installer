@@ -1,7 +1,15 @@
-## atoum installer
+## atoum installer [![Build Status](https://secure.travis-ci.org/jubianchi/atoum-installer.png)](http://travis-ci.org/jubianchi/atoum-installer)
 
 **This installer is in heavy development and is currently only working on Unix systems as it relies on system commands.**
 **If you find any bug, please [fill in an issue](https://github.com/jubianchi/atoum-installer/issues) or join us on ##atoum on Freenode IRC network to discuss it.**
+
+### Install atoum
+```shell
+$ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | php -- --phar
+$ php mageekguy.atoum.phar -h
+
+# Enjoy unit testing !
+```
 
 ### Usage
 ```shell
@@ -44,5 +52,5 @@ $ vendor/bin/behat
 
 # Or to launch a specific feature :
 
-$ vendor/bin/behat the/feature/path.feature
+$ vendor/bin/behat features/the.feature
 ```
