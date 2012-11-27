@@ -11,12 +11,12 @@ Feature: Usage
         --check         : Only run system requirements check
 
         Environment :
-        ATOUM_GIT_URL   : Git repository (default : git://github.com/mageekguy/atoum.git)
+        ATOUM_GIT_URL   : Git repository (default : git://github.com/atoum/atoum.git)
         ATOUM_PATH      : Installation directory (default : /usr/share)
         ATOUM_SYMLINK   : atoum bin symlink path (default: /usr/local/bin)
 
         Examples :
-        $ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | php -- --phar
-        $ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | sudo php -- --global
-        $ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | ATOUM_PATH=/home/me php
+        $ curl https://raw.github.com/atoum/atoum-installer/master/installer | php -- --phar
+        $ curl https://raw.github.com/atoum/atoum-installer/master/installer | sudo php -- --global
+        $ curl https://raw.github.com/atoum/atoum-installer/master/installer | ATOUM_PATH=/home/me php
         """

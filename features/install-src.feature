@@ -17,7 +17,7 @@ Feature: Install sources
         >> Installing from sources\.\.\.
         >>> Directory [^\s]* does not exist\.
         >>> Cloning source repository\.\.\.
-        >>> git clone git:\/\/github\.com\/mageekguy\/atoum\.git [^\s]*atoum
+        >>> git clone git:\/\/github\.com\/atoum\/atoum\.git [^\s]*atoum
         Cloning into '?[^\s]*atoum'?\.\.\.
         >>> Installed atoum master@[a-z0-9]{7}
         >> atoum sources path \: [^\s]*atoum
@@ -30,7 +30,7 @@ Feature: Install sources
      Then The command should exit with success status
 
   Scenario: Install from a custom source repository (Git)
-    Given I run "ATOUM_GIT_URL=git://github.com/jubianchi/atoum.git php -n ./installer"
+    Given I run "ATOUM_GIT_URL=git://github.com/atoum/atoum.git php -n ./installer"
      Then I should see output matching
         """
         > atoum installer
@@ -44,7 +44,7 @@ Feature: Install sources
         >> Installing from sources\.\.\.
         >>> Directory [^\s]* does not exist\.
         >>> Cloning source repository\.\.\.
-        >>> git clone git:\/\/github\.com\/jubianchi\/atoum\.git [^\s]*atoum
+        >>> git clone git:\/\/github\.com\/atoum\/atoum\.git [^\s]*atoum
         Cloning into '?[^\s]*atoum'?\.\.\.
         >>> Installed atoum master@[a-z0-9]{7}
         >> atoum sources path \: [^\s]*atoum

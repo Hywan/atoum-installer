@@ -1,11 +1,11 @@
-## atoum installer [![Build Status](https://secure.travis-ci.org/jubianchi/atoum-installer.png)](http://travis-ci.org/jubianchi/atoum-installer)
+## atoum installer [![Build Status](https://secure.travis-ci.org/atoum/atoum-installer.png)](http://travis-ci.org/jubianchi/atoum-installer)
 
 **This installer is in heavy development and is currently only working on Unix systems as it relies on system commands.**
-**If you find any bug, please [fill in an issue](https://github.com/jubianchi/atoum-installer/issues) or join us on ##atoum on Freenode IRC network to discuss it.**
+**If you find any bug, please [fill in an issue](https://github.com/atoum/atoum-installer/issues) or join us on ##atoum on Freenode IRC network to discuss it.**
 
 ### Install atoum
 ```shell
-$ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | php -- --phar
+$ curl https://raw.github.com/atoum/atoum-installer/master/installer | php -- --phar
 $ php mageekguy.atoum.phar -h
 
 # Enjoy unit testing !
@@ -23,14 +23,14 @@ $ curl https://raw.github.com/gist/3934569/installer | php -- --usage
 --check         : Only run system requirements check
 
 Environment :
-ATOUM_GIT_URL   : Git repository (default : git://github.com/mageekguy/atoum.git)
+ATOUM_GIT_URL   : Git repository (default : git://github.com/atoum/atoum.git)
 ATOUM_PATH      : Installation directory (default : /usr/share)
 ATOUM_SYMLINK   : atoum bin symlink path (default: /usr/local/bin)
 
 Examples :
-$ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | php -- --phar
-$ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | sudo php -- --global
-$ curl https://raw.github.com/jubianchi/atoum-installer/master/installer | ATOUM_PATH=/home/me php
+$ curl https://raw.github.com/atoum/atoum-installer/master/installer | php -- --phar
+$ curl https://raw.github.com/atoum/atoum-installer/master/installer | sudo php -- --global
+$ curl https://raw.github.com/atoum/atoum-installer/master/installer | ATOUM_PATH=/home/me php
 ```
 
 ### Hacking

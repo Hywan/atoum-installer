@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
-define('INSTALLER_URL',         'https://raw.github.com/jubianchi/atoum-installer/master/installer');
+define('INSTALLER_URL',         'https://raw.github.com/atoum/atoum-installer/master/installer');
 define('ATOUM_PHAR_NAME',       'mageekguy.atoum.phar');
 define('ATOUM_PHAR_URL',        (($phar = getenv('ATOUM_PHAR_URL')) ? $phar : 'http://downloads.atoum.org/nightly/' . ATOUM_PHAR_NAME));
-define('ATOUM_GIT_URL',         (($url = getenv('ATOUM_GIT_URL')) ? $url : 'git://github.com/mageekguy/atoum.git'));
+define('ATOUM_GIT_URL',         (($url = getenv('ATOUM_GIT_URL')) ? $url : 'git://github.com/atoum/atoum.git'));
 
 define('ATOUM_PATH_DEFAULT',    '/usr/share');
 define('ATOUM_PATH',            (($path = getenv('ATOUM_PATH')) ? $path : ATOUM_PATH_DEFAULT) . DIRECTORY_SEPARATOR . 'atoum');
@@ -85,7 +85,7 @@ function usage(array $args) {
     printfln($format, '--check', 'Only run system requirements check');
 
     printfln(PHP_EOL . 'Environment :');
-    printfln($format, 'ATOUM_GIT_URL', 'Git repository <yellow>(default : git://github.com/mageekguy/atoum.git)');
+    printfln($format, 'ATOUM_GIT_URL', 'Git repository <yellow>(default : git://github.com/atoum/atoum.git)');
     printfln($format, 'ATOUM_PATH', 'Installation directory <yellow>(default : ' . ATOUM_PATH_DEFAULT . ')');
     printfln($format, 'ATOUM_SYMLINK', 'atoum bin symlink path <yellow>(default: ' . ATOUM_SYMLINK_DEFAULT . ')');
 

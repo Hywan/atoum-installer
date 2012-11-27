@@ -54,8 +54,8 @@ Feature: Check
         >>> To generate code coverage report you need to install XDebug
         >>> open_basedir restriction \: \/tmp
         >>>> To fix this issue, try to run \:
-        >>>> ATOUM_PATH=\/an\/allowed\/path \.\/installer or curl https\:\/\/raw\.github\.com\/jubianchi\/atoum\-installer\/master\/installer \| ATOUM_PATH=\/an\/allowed\/path php
+        >>>> ATOUM_PATH=\/an\/allowed\/path \.\/installer or curl https\:\/\/raw\.github\.com\/atoum\/atoum\-installer\/master\/installer \| ATOUM_PATH=\/an\/allowed\/path php
         >>>> or
-        >>>> php \-dopen_basedir= \.\/installer or curl https\:\/\/raw\.github\.com\/jubianchi\/atoum\-installer\/master\/installer \| php \-dopen_basedir=
+        >>>> php \-dopen_basedir= \.\/installer or curl https\:\/\/raw\.github\.com\/atoum\/atoum\-installer\/master\/installer \| php \-dopen_basedir=
         >>> You don't have required permissions on \/usr\/local\/bin, \/usr\/share
         """
