@@ -118,14 +118,14 @@ function download(array $args) {
             ppassthru('git clone ' . ATOUM_GIT_URL . ' ' . $path);
 
             $output = null;
-            exec('git rev-parse HEAD', $output);
+            exec('cd ' . $path . ' && git rev-parse HEAD', $output);
             printfln('>>> <yellow>Installed atoum master@%s', substr(implode('', $output), 0, 7));
         } else {
             printfln('>> <yellow>Updating sources...');
             ppassthru('cd ' . $path . ' && git fetch origin && git reset --hard origin/master');
 
             $output = null;
-            exec('git rev-parse HEAD', $output);
+            exec('cd ' . $path . ' && git rev-parse HEAD', $output);
             printfln('>>> <yellow>Updated atoum to master@%s', substr(implode('', $output), 0, 7));
         }
     }
