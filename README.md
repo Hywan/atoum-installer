@@ -4,7 +4,7 @@
 
 ### Install atoum
 ```shell
-$ curl https://raw.github.com/atoum/atoum-installer/master/installer | php -- --phar
+$ curl -s https://raw.github.com/atoum/atoum-installer/master/installer | php -- --phar
 $ php mageekguy.atoum.phar -h
 
 # Enjoy unit testing !
@@ -12,8 +12,7 @@ $ php mageekguy.atoum.phar -h
 
 ### Usage
 ```shell
-$ ./installer --usage
-$ curl https://raw.github.com/atoum/atoum-installer/master/installer | php -- --usage
+$ curl -s https://raw.github.com/atoum/atoum-installer/master/installer | php -- --usage
 > atoum installer
 > The modern, simple and intuitive PHP 5.3+ unit testing framework.
 --global        : Install atoum as a global command
